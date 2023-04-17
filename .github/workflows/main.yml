@@ -1,0 +1,57 @@
+name: Task Deployment
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout the code
+      uses: actions/checkout@v2
+
+    - name: Install kubectl
+      uses: daisuke-awaji/setup-kubectl@v1
+      with:
+        kubectl-version: '1.22.2' 
+  
+    - name: Read env version of K8s pod
+      run: |
+        kubectl get pod pods.yaml -o jsonpath='{.metadata.labels.version}'
+    
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ needs.build.result == 'failure')
+
+    steps:
+    - name: Test
+      run: make unit-test
+
+
+  rollback:
+    needs: [build, test]
+    runs-on: ubuntu-latest 
+    if: ${{ needs.build.result == 'failure' || needs.test.result == 'failure' }} 
+
+    steps:
+      - name: Get previous deployment
+        uses: peter-evans/get-previous-deployment@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: dev
+
+      - name: Rollback deployment
+        uses: peter-evans/rollback@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          deployment_id: ${{ steps.get_previous_deployment.outputs.id }}
+
