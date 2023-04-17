@@ -26,7 +26,7 @@ jobs:
         
     - name: Set up kubectl
       run: |
-        kubectl cluster-info
+        kubectl cluster-info dump
         kubectl config view
         
     - name: Read env version of K8s pod
