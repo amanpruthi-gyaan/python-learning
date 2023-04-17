@@ -16,7 +16,6 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: build
-    if: ${{ failure() }}
     steps:
     - name: Show the variable values
       env:
@@ -26,9 +25,6 @@ jobs:
         VAR4: Workflow jobs
       run: |
         echo $VAR1 $VAR2 $VAR3 $VAR4
-        
-    - name: Exit with failure
-      run: exit 1
         
   rollback:
     runs-on: ubuntu-latest
