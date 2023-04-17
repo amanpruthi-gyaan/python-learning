@@ -25,9 +25,9 @@ jobs:
         version: 'latest'
         
     - name: Set up kubectl
-      uses: kubernetes-cli/setup-kubectl@v1
-      with:
-        kubeconfig: './kubeconfig.yaml'
+      run: |
+        kubectl cluster-info
+        kubectl config view
         
     - name: Read env version of K8s pod
       run: |
