@@ -19,9 +19,9 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up kubectl
-      uses: daisuke-awaji/setup-kubectl@v1
+      uses: daisuke-awaji/setup-kubectl@v1.22.2
       with:
-        kubectl-version: 'latest'
+        kubectl-version: '1.22.2'
         
     - name: Read env version of K8s pod
       run: |
