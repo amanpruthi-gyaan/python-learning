@@ -1,63 +1,38 @@
-name: Task Deployment
-
+name: Logic-build-workflow
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
-
-  pull_request:
-    branches:
-      - main
-
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      build-number: ${{ steps.get-build-number.outputs.build-number }}
     steps:
-    - name: Checkout the code
-      uses: actions/checkout@v2
+    - name: Get build number
+      id: get-build-number
+      run: echo "::set-output name=build-number::42"
 
-    - name: Install kubectl
-      uses: azure/setup-kubectl@v1
-      id: install
-      with:
-        version: 'latest'
-        
-    - name: Set up kubectl
-      run: |
-        kubectl cluster-info dump
-        kubectl config view
-        
-    - name: Read env version of K8s pod
-      run: |
-        kubectl get pod pods.yaml -o jsonpath='{.metadata.labels.version}'
-    
   test:
-    needs: build
     runs-on: ubuntu-latest
-    if: ${{ needs.build.result == 'failure'}}
-
+    needs: build
+    if: ${{ failure() }}
     steps:
-    - name: Test
-      run: make unit-test
-
-
+    - name: Exit with failure
+      run: exit 1
+    - name: Show the variable values
+      env:
+        VAR1: This is
+        VAR2: A Demo of
+        VAR3: GitHub Actions
+        VAR4: Workflow jobs
+      run: |
+        echo $VAR1 $VAR2 $VAR3 $VAR4
+        
   rollback:
+    runs-on: ubuntu-latest
     needs: [build, test]
-    runs-on: ubuntu-latest 
-    if: ${{ needs.build.result == 'failure' || needs.test.result == 'failure' }} 
-
+    if: ${{ needs.jobA.result == 'failure' || needs.jobB.result == 'failure' }}
     steps:
-      - name: Get previous deployment
-        uses: peter-evans/get-previous-deployment@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          environment: dev
-
-      - name: Rollback deployment
-        uses: peter-evans/rollback@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          deployment_id: ${{ steps.get_previous_deployment.outputs.id }}
-
+    - name: Rollback to print build number of JobA
+      run: echo "Build number is ${{ jobs.jobA.outputs.build-number }}"
