@@ -18,7 +18,11 @@ jobs:
     needs: build
     steps:
     - name: Fail the test job
-      run: exit 1    
+      run: |
+        #!/bin/bash
+        echo "This test always fails"
+        exit 1
+
         
   rollback:
     runs-on: ubuntu-latest
