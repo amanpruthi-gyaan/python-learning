@@ -24,6 +24,11 @@ jobs:
       with:
         version: 'latest'
         
+    - name: Set up kubectl
+      uses: kubernetes-cli/setup-kubectl@v1
+      with:
+        kubeconfig: './kubeconfig.yaml'
+        
     - name: Read env version of K8s pod
       run: |
         kubectl get pod pods.yaml -o jsonpath='{.metadata.labels.version}'
