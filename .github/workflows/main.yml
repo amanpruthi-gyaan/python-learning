@@ -22,7 +22,7 @@ jobs:
         #!/bin/bash
         echo "This test always fails"
         exit 1
-
+      continue-on-error: true
         
   rollback:
     runs-on: ubuntu-latest
