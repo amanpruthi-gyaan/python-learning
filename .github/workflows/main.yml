@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+    - name: Fail the test job
+      run: exit 1    
     - name: Show the variable values
       env:
         VAR1: This is
