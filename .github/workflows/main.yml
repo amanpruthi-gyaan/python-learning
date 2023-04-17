@@ -36,4 +36,4 @@ jobs:
     if: ${{ needs.build.result == 'failure' || needs.test.result == 'failure' }}
     steps:
     - name: Rollback to print build number of build job
-      run: echo "Build number is ${{ jobs.build.outputs.build-number }}"
+      run: echo "Build number is ${{ needs.build.outputs.build-number }}"
