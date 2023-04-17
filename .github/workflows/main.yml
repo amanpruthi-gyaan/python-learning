@@ -30,7 +30,7 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
-    if: ${{ needs.build.result == 'failure')
+    if: ${{ needs.build.result == 'failure'}}
 
     steps:
     - name: Test
