@@ -30,8 +30,9 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
-    steps:
+    if: ${{ needs.build.result == 'failure')
 
+    steps:
     - name: Test
       run: make unit-test
 
@@ -39,7 +40,7 @@ jobs:
   rollback:
     needs: [build, test]
     runs-on: ubuntu-latest 
-    if: ${{ needs.build.result == 'failure' || needs.test.result == 'failure' }}      # if failure() --for both jobs failure condition
+    if: ${{ needs.build.result == 'failure' || needs.test.result == 'failure' }} 
 
     steps:
       - name: Get previous deployment
