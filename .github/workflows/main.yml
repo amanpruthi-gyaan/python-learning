@@ -18,11 +18,11 @@ jobs:
     - name: Checkout the code
       uses: actions/checkout@v2
 
-    - name: Install kubectl
-      uses: daisuke-awaji/setup-kubectl@v1
+    - name: Set up kubectl
+      uses: kubernetes-cli/setup-kubectl@v1
       with:
-        kubectl-version: '1.22.2' 
-  
+        kubectl-version: 'latest'
+        
     - name: Read env version of K8s pod
       run: |
         kubectl get pod pods.yaml -o jsonpath='{.metadata.labels.version}'
