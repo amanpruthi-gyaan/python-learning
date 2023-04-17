@@ -18,10 +18,11 @@ jobs:
     - name: Checkout the code
       uses: actions/checkout@v2
 
-    - name: Set up kubectl
-      uses: daisuke-awaji/setup-kubectl@v2
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v1
+      id: install
       with:
-        kubectl-version: 'latest'
+        version: 'latest'
         
     - name: Read env version of K8s pod
       run: |
